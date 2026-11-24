@@ -20,9 +20,9 @@ OUT = os.path.join(ROOT, "out")
 TAG_CLASS = {"CONFIRMED": "t-conf", "OFFICIAL": "t-off", "REPORTED": "t-rep", "CLAIM": "t-claim"}
 
 # layout knobs (a variant can override them through the VARIANT environment variable, as JSON)
-K = dict(lead_pic=96, card_pic=62, cards=8, card_cols=4, head_lead=22.5, head_card=17.5, brief_font=11.8,
+K = dict(lead_pic=96, card_pic=62, cards=8, card_cols=4, head_lead=22.5, head_card=17.5, brief_font=12.6,
          briefs=27, brief_cols=3, brief_src=0, dek_lead=13.4, dek_card=12.8, sub_size=20,
-         date_size=70, map=0, map_w=236, map_h=140)
+         date_size=70, map=1, map_side="right", map_w=206, map_h=150)
 K.update(json.loads(os.environ.get("VARIANT", "{}")))
 
 # What this variant shows: the first K['cards'] cards are drawn, the rest drop into the short list;
@@ -244,7 +244,7 @@ h3{{font:700 {K['head_card']}px/1.14 Georgia,serif;margin-top:3px;color:#111}}
 .sec span{{font:400 11.5px "Segoe UI",Arial;color:#555;letter-spacing:0;margin-left:6px}}
 .cards{{display:grid;grid-template-columns:repeat({K['card_cols']},1fr);gap:8px 10px;margin:4px 16px 0}}
 .bottom{{display:flex;gap:14px;margin:9px 16px 0;border-top:2.5px solid #14213d;padding-top:5px}}
-.mapbox{{width:{K['map_w']}px}}
+.mapbox{{width:{K['map_w']}px;flex:none}}
 .mapbox h4,.also h4{{font:700 12.5px Bahnschrift,Arial;letter-spacing:.06em;color:#14213d;margin-bottom:3px}}
 .mapbox h4 span,.also h4 span{{color:#b42318}}
 .mapbox svg{{display:block;border:1px solid #c9bfa8;border-radius:3px}}
@@ -273,9 +273,10 @@ h3{{font:700 {K['head_card']}px/1.14 Georgia,serif;margin-top:3px;color:#111}}
 <div class="sec">THE DAY IN {len(SEL_CARDS)} MORE<span>Monday's other big stories, across {len({s['region'] for s in SEL_CARDS})} regions</span></div>
 <div class="cards">{cards}</div>
 <div class="bottom">
-  {mapbox}
+  {mapbox if K.get('map_side') != 'right' else ''}
   <div class="also"><h4>ALSO ON MONDAY 23 NOVEMBER <span>— {len(SEL_BRIEFS)} MORE STORIES</span></h4>
     <div class="cols">{cols}</div></div>
+  {mapbox if K.get('map_side') == 'right' else ''}
 </div>
 <div class="check"><div class="lab">DATE<br>CHECK</div><div class="txt">Every story here happened, or was first reported, on
   <b>Monday 23 November 2026</b> (UTC). <b>Left out as other days' news:</b> {left}.</div></div>
